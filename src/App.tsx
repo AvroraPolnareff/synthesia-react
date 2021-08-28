@@ -1,24 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react';
+import {Input, MIDIFilter, MIDINote, useMIDI, useMIDINote} from "@react-midi/hooks";
+import {Keyboard} from "./Keyboard";
 
 function App() {
+  return <MidiApp/>
+}
+
+export const useMIDINotes = (input: Input, filter: MIDIFilter = {}) => {
+  const [notes, setNotes] = useState<MIDINote[]>([]);
+  const value = useMIDINote(input, filter);
+  useEffect(() => {
+    if (!input) return;
+    if (value?.on) setNotes(notes => [...notes, value]);
+    else setNotes(notes => notes.filter((n) => n.note !== value.note)); // Note off, remove note from array (maybe check for channel?)
+  }, [input, value]);
+  return notes;
+};
+
+const MidiApp = () => {
+  const midi = useMIDI();
+
+  const notes = useMIDINotes(midi.inputs[0], {channel: 1})
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{display: "flex",  flexDirection: "column"}}>
+      <Keyboard pressedKeys={notes?.map(note => note.note) ?? []}/>
     </div>
   );
 }
