@@ -3,9 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {keyboardKeys} from "./Keyboard";
-
-console.log(keyboardKeys)
 
 ReactDOM.render(
   <React.StrictMode>
