@@ -3,13 +3,17 @@ import styled, {css} from "styled-components"
 import {array} from "fp-ts"
 import {isBlack} from "../keyboard"
 
-
-const Note = styled.div<{size: number, position: number}>`
+interface NoteProps {
+  position: number
+  size: number
+}
+const Note = styled.div.attrs((props: NoteProps) => ({
+  style: {bottom: `${props.position}px`, height: `${props.size}px`}
+}))<NoteProps>`
   position: absolute;
   width: 100%;
+  bottom: 0;
   background: #ff7878;
-  bottom: ${({position}) => position}px;
-  height: ${({size}) => size}px;
 `
 
 interface LineProps {
@@ -52,7 +56,7 @@ const NoteField = styled(({notes = [], className, start = 48, end = 71}: NoteFie
     <div className={className}>
       {createLines(notes, start, end).map((line, i) =>
         <Line black={isBlack(i + start)}>
-          {line.map(note => <Note position={note.position} size={note.length}/>)}
+          {line.map(note => <Note position={note.position * 100} size={note.length * 100}/>)}
         </Line>
       )}
     </div>

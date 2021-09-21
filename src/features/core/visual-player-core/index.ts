@@ -32,22 +32,23 @@ export class VisualPlayerCore {
     private speed: number = 1,
   ) { }
 
-  private get tickLength() { return 60 / this.tempo / this.midi.header.ppq * this.speed  * 1000 }
+  private get tickLength() { return 60 / this.tempo / this.midi.header.ppq * this.speed }
 
   private tempo = this.midi.header.tempos[0].bpm
   private currentTick = 0
   private isPlaying = false
   private listeners: Listener[] = []
-  private timer?: ReturnType<typeof setTimeout>
   private deltaframe = new Deltaframe({minFps: 30, targetFps: 144})
-  private state = initPlayerState;
+  private delta = 16.6;
+  private time = 0;
+  private startTime = 0;
+  private state = initPlayerState
 
   private nextState = (): PlayerState => {
+    if (this.isPlaying) this.currentTick = Math.floor(this.time / this.tickLength)
     const notes = this.midi.tracks[this.trackToPlay].notes
-      .map(({midi, durationTicks, ticks}) => ({note: midi, position: ticks - this.currentTick, length: durationTicks}))
+      .map(({midi, duration, time}) => ({note: midi, position: time - this.time, length: duration}))
     const currentNotes = notes.filter(note => note.position <= 0 && note.position * -1 <= note.length)
-    if (this.isPlaying) this.currentTick++
-    if (this.currentTick === this.midi.tracks[this.trackToPlay].endOfTrackTicks) this.stop()
 
     return {
       currentTick: this.currentTick,
@@ -67,26 +68,29 @@ export class VisualPlayerCore {
 
   public play = () => {
     this.isPlaying = true
-    this.timer = setInterval(() => {
-      this.state = this.nextState()
-    }, this.tickLength)
+    this.startTime = Date.now()
     this.deltaframe.start((time: number, delta: number) => {
-      this.passStateToListeners(this.state)
+      this.time = (Date.now() - this.startTime) / 1000
+      this.delta = delta / 1000
+      if (this.time > this.midi.tracks[this.trackToPlay].duration) return this.stop()
+      this.passStateToListeners(this.nextState())
     })
   }
 
   public pause = () => {
     if (this.isPlaying) {
       this.isPlaying = false
-      if (this.timer) {
-        clearInterval(this.timer)
-      }
+      this.deltaframe.pause()
     }
     this.passStateToListeners(this.nextState())
   }
 
   public stop = () => {
+    this.isPlaying = false
+    this.deltaframe.stop()
+    this.deltaframe = new Deltaframe({minFps: 30, targetFps: 60})
+    this.time = 0
     this.currentTick = 0
-    this.pause()
+    this.passStateToListeners(initPlayerState)
   }
 }
