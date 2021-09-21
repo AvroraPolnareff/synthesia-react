@@ -1,10 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {Input, MIDIFilter, MIDINote, useMIDI, useMIDINote} from "@react-midi/hooks"
-import {Keyboard} from "./Keyboard"
+import Keyboard from "./features/widgets/keyboard"
 import {Midi} from "@tonejs/midi"
-import {initPlayerState, VisualPlayerCore} from "./features/player-core"
-import * as option from "fp-ts/es6/Option"
+import {initPlayerState, VisualPlayerCore} from "./features/core/visual-player-core"
+import {option} from "fp-ts"
 import {Option} from "fp-ts/es6/Option"
+import NoteField from "./features/widgets/note-field"
 
 export const useMIDINotes = (input: Input, filter: MIDIFilter = {}) => {
   const [notes, setNotes] = useState<MIDINote[]>([])
@@ -36,16 +37,17 @@ export const useMidiFile = (): Option<Midi> => {
 
 export const useMIDIPlayer = ({track = 1}: { track: number }) => {
   const midi = useMidiFile()
-  return option.map((midi: Midi) => new VisualPlayerCore(midi, track))(midi)
+  return option.map((midi: Midi) => new VisualPlayerCore(midi, track, 0.5))(midi)
 }
 
 const MidiApp = ({player}: {player: VisualPlayerCore}) => {
   const [playerState, setPlayerState] = useState(initPlayerState);
-  const {currentNotes, isPlaying} = playerState;
+  const {currentNotes, isPlaying, notes} = playerState;
   useEffect(() => player.onStateChange(setPlayerState), [player])
 
   return (
     <div style={{display: "flex", flexDirection: "column"}}>
+      <NoteField notes={notes}/>
       <Keyboard pressedKeys={currentNotes.map(({note}) => note)}/>
       <button onClick={isPlaying ? player.stop : player.play}>
         {isPlaying ? "stop" : "play"}
