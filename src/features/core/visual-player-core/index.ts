@@ -1,5 +1,4 @@
 import {Midi} from "@tonejs/midi"
-import Deltaframe from "deltaframe"
 
 export interface DisplayNote {
   note: number
@@ -38,11 +37,9 @@ export class VisualPlayerCore {
   private currentTick = 0
   private isPlaying = false
   private listeners: Listener[] = []
-  private deltaframe = new Deltaframe({minFps: 30, targetFps: 144})
-  private delta = 16.6
   private time = 0
   private startTime = 0
-  private state = initPlayerState
+  private animation = 0
 
   private nextState = (): PlayerState => {
     if (this.isPlaying) this.currentTick = Math.floor(this.time / this.tickLength)
@@ -67,31 +64,29 @@ export class VisualPlayerCore {
   }
 
   public play = () => {
-    this.deltaframe.start((time: number, delta: number) => {
+    this.animation = requestAnimationFrame((time) => {
       if (this.time > this.midi.tracks[this.trackToPlay].duration) {
-        this.deltaframe.stop()
         this.stop()
       } else {
         if (!this.isPlaying) this.startTime = time
         this.isPlaying = true
         this.time = (time - this.startTime) / 1000
-        this.delta = delta / 1000
         this.passStateToListeners(this.nextState())
+        this.play()
       }
     })
-    this.deltaframe.resume()
   }
 
   public pause = () => {
     if (this.isPlaying) {
+      cancelAnimationFrame(this.animation)
       this.isPlaying = false
-      this.deltaframe.pause()
     }
     this.passStateToListeners(this.nextState())
   }
 
   public stop = () => {
-    this.deltaframe.stop()
+    cancelAnimationFrame(this.animation)
     this.isPlaying = false
     this.time = 0
     this.startTime = 0
