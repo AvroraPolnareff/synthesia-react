@@ -1,6 +1,7 @@
 {
   "name": "synthesia-react",
   "version": "0.1.0",
+  "homepage": "http://avrorapolnareff.github.io/synthesia-react",
   "private": true,
   "dependencies": {
     "@react-midi/hooks": "^1.0.2",
