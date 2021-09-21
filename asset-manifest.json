@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/synthesia-react/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/synthesia-react/static/js/main.52d14987.chunk.js",
-    "main.js.map": "/synthesia-react/static/js/main.52d14987.chunk.js.map",
+    "main.js": "/synthesia-react/static/js/main.011f856d.chunk.js",
+    "main.js.map": "/synthesia-react/static/js/main.011f856d.chunk.js.map",
     "runtime-main.js": "/synthesia-react/static/js/runtime-main.5c95fcf1.js",
     "runtime-main.js.map": "/synthesia-react/static/js/runtime-main.5c95fcf1.js.map",
-    "static/js/2.a742bc43.chunk.js": "/synthesia-react/static/js/2.a742bc43.chunk.js",
-    "static/js/2.a742bc43.chunk.js.map": "/synthesia-react/static/js/2.a742bc43.chunk.js.map",
+    "static/js/2.a7c12be8.chunk.js": "/synthesia-react/static/js/2.a7c12be8.chunk.js",
+    "static/js/2.a7c12be8.chunk.js.map": "/synthesia-react/static/js/2.a7c12be8.chunk.js.map",
     "static/js/3.b6eb1891.chunk.js": "/synthesia-react/static/js/3.b6eb1891.chunk.js",
     "static/js/3.b6eb1891.chunk.js.map": "/synthesia-react/static/js/3.b6eb1891.chunk.js.map",
     "index.html": "/synthesia-react/index.html",
     "static/css/main.6dea0f05.chunk.css.map": "/synthesia-react/static/css/main.6dea0f05.chunk.css.map",
-    "static/js/2.a742bc43.chunk.js.LICENSE.txt": "/synthesia-react/static/js/2.a742bc43.chunk.js.LICENSE.txt"
+    "static/js/2.a7c12be8.chunk.js.LICENSE.txt": "/synthesia-react/static/js/2.a7c12be8.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.5c95fcf1.js",
-    "static/js/2.a742bc43.chunk.js",
+    "static/js/2.a7c12be8.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.52d14987.chunk.js"
+    "static/js/main.011f856d.chunk.js"
   ]
 }
