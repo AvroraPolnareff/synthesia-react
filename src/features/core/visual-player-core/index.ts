@@ -39,9 +39,9 @@ export class VisualPlayerCore {
   private isPlaying = false
   private listeners: Listener[] = []
   private deltaframe = new Deltaframe({minFps: 30, targetFps: 144})
-  private delta = 16.6;
-  private time = 0;
-  private startTime = 0;
+  private delta = 16.6
+  private time = 0
+  private startTime = 0
   private state = initPlayerState
 
   private nextState = (): PlayerState => {
@@ -67,14 +67,19 @@ export class VisualPlayerCore {
   }
 
   public play = () => {
-    this.isPlaying = true
-    this.startTime = Date.now()
     this.deltaframe.start((time: number, delta: number) => {
-      this.time = (Date.now() - this.startTime) / 1000
-      this.delta = delta / 1000
-      if (this.time > this.midi.tracks[this.trackToPlay].duration) return this.stop()
-      this.passStateToListeners(this.nextState())
+      if (this.time > this.midi.tracks[this.trackToPlay].duration) {
+        this.deltaframe.stop()
+        this.stop()
+      } else {
+        if (!this.isPlaying) this.startTime = time
+        this.isPlaying = true
+        this.time = (time - this.startTime) / 1000
+        this.delta = delta / 1000
+        this.passStateToListeners(this.nextState())
+      }
     })
+    this.deltaframe.resume()
   }
 
   public pause = () => {
@@ -86,11 +91,11 @@ export class VisualPlayerCore {
   }
 
   public stop = () => {
-    this.isPlaying = false
     this.deltaframe.stop()
-    this.deltaframe = new Deltaframe({minFps: 30, targetFps: 60})
+    this.isPlaying = false
     this.time = 0
+    this.startTime = 0
     this.currentTick = 0
-    this.passStateToListeners(initPlayerState)
+    this.passStateToListeners(this.nextState())
   }
 }
