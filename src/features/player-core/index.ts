@@ -1,15 +1,14 @@
 import {Midi} from "@tonejs/midi"
-import Timeout = NodeJS.Timeout
 
 
 interface DisplayNote {
-  note: number,
-  position: number,
+  note: number
+  position: number
   length: number
 }
 
 interface PlayerState {
-  play: boolean,
+  isPlaying: boolean,
   currentNotes: DisplayNote[],
   currentTick: number,
   notes: DisplayNote[]
@@ -30,12 +29,12 @@ interface PlayerState {
 //   }
 // }
 
-const initPlayerState = {
-  play: false,
+export const initPlayerState: PlayerState = {
+  isPlaying: false,
   currentNotes: [],
   notes: [],
-  currentTime: 0,
-  position: 0,
+  currentTick: 0,
+  tickLength: 0,
 }
 
 // const playerReducer = (state: PlayerState, action: PlayerAction): PlayerState => {
@@ -62,58 +61,56 @@ export class VisualPlayerCore {
     private readonly midi: Midi,
     private trackToPlay: number = 1,
     private speed: number = 1,
-  ) { }
+  ) { console.log(midi) }
+
+  private get tickLength() { return 60 / this.tempo / this.midi.header.ppq * this.speed  * 1000 }
 
   private tempo = this.midi.header.tempos[0].bpm
-
-  get tickLength() { return 60 / this.tempo / this.midi.header.ppq * this.speed }
-
   private currentTick = 0
-
   private isPlaying = false
-
   private listeners: Listener[] = []
+  private timer?: ReturnType<typeof setTimeout>
 
-  private timer?: Timeout;
-
-  nextState(): PlayerState {
+  private nextState = (): PlayerState => {
     const notes = this.midi.tracks[this.trackToPlay].notes
-      .map(({midi, duration, ticks}) => ({note: midi, position: duration - this.currentTick, length: ticks}))
-    const currentNotes = notes.filter(note => note.position === 0 && note.position * -1 < note.length)
+      .map(({midi, durationTicks, ticks}) => ({note: midi, position: ticks - this.currentTick, length: durationTicks}))
+    const currentNotes = notes.filter(note => note.position <= 0 && note.position * -1 <= note.length)
+    console.log(this.tickLength)
     if (this.isPlaying) this.currentTick++
+    if (this.currentTick === this.midi.tracks[this.trackToPlay].endOfTrackTicks) this.stop()
 
     return {
       currentTick: this.currentTick,
       notes,
       currentNotes,
-      play: this.isPlaying,
+      isPlaying: this.isPlaying,
       tickLength: this.tickLength,
     }
   }
 
-  onStateChange = (callback: (state: PlayerState) => void) => {
-    this.listeners.push(callback)
-  }
+  private passStateToListeners = (state: PlayerState) => { this.listeners.forEach((listener) => listener(state)) }
 
-  play() {
+  public onStateChange = (callback: (state: PlayerState) => void) => { this.listeners.push(callback) }
+
+  public play = () => {
     this.isPlaying = true
     this.timer = setInterval(() => {
-      const state = this.nextState()
-      this.listeners.forEach((listener) => listener(state))
+      this.passStateToListeners(this.nextState())
     }, this.tickLength)
   }
 
-  pause() {
+  public pause = () => {
     if (this.isPlaying) {
       this.isPlaying = false
       if (this.timer) {
         clearInterval(this.timer)
       }
     }
+    this.passStateToListeners(this.nextState())
   }
 
-  stop() {
-    this.pause()
+  public stop = () => {
     this.currentTick = 0
+    this.pause()
   }
 }
