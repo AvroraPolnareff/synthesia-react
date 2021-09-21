@@ -1,6 +1,5 @@
 import {Midi} from "@tonejs/midi"
 
-
 interface DisplayNote {
   note: number
   position: number
@@ -15,20 +14,6 @@ interface PlayerState {
   tickLength: number
 }
 
-// type PlayerAction =
-//   | { type: "play" }
-//   | { type: "pause" }
-//   | { type: "stop" }
-//   | {
-//   type: "nextPlayerTick",
-//   payload: {
-//     quarter: number,
-//     tempo: number,
-//     notes: Note[],
-//     trackLength: number
-//   }
-// }
-
 export const initPlayerState: PlayerState = {
   isPlaying: false,
   currentNotes: [],
@@ -36,23 +21,6 @@ export const initPlayerState: PlayerState = {
   currentTick: 0,
   tickLength: 0,
 }
-
-// const playerReducer = (state: PlayerState, action: PlayerAction): PlayerState => {
-//   switch (action.type) {
-//     case "play":
-//       return {...state, play: true}
-//     case "pause":
-//       return {...state, play: false}
-//     case "stop":
-//       return {play: false, currentNotes: [], position: 0, currentTime: 0}
-//     case "nextPlayerTick": {
-//       const {quarter, tempo, notes, trackLength} = action.payload
-//       if (trackLength > state.position) {
-//         return {
-//           play: true,
-//           currentNotes: notes.filter(note => state.position >= note.ticks && state.position <= note.ticks +
-// note.durationTicks), currentTime: 0, position: state.position + 1, } } return {play: false, currentNotes: [],
-// position: 0, currentTime: 0} } } }
 
 type Listener = (state: PlayerState) => void
 

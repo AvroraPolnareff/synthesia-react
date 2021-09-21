@@ -18,9 +18,6 @@ export const useMIDINotes = (input: Input, filter: MIDIFilter = {}) => {
   return notes
 }
 
-
-type UseMidiFileState = { status: "loaded", midi: Midi } | { status: "loading" }
-
 export const useMidiFile = (): Option<Midi> => {
   const [midi, setMidi] = useState<Option<Midi>>(option.none)
 
@@ -39,13 +36,12 @@ export const useMidiFile = (): Option<Midi> => {
 
 export const useMIDIPlayer = ({track = 1}: { track: number }) => {
   const midi = useMidiFile()
-  const visualPlayer = useRef<Option<VisualPlayerCore>>(option.none)
   return option.map((midi: Midi) => new VisualPlayerCore(midi, track))(midi)
 }
 
 const MidiApp = ({player}: {player: VisualPlayerCore}) => {
   const [playerState, setPlayerState] = useState(initPlayerState);
-  const {currentNotes, currentTick, notes, isPlaying, tickLength} = playerState;
+  const {currentNotes, isPlaying} = playerState;
   useEffect(() => player.onStateChange(setPlayerState), [player])
 
   return (
@@ -62,7 +58,6 @@ const App = () => {
   const midi = useMIDI()
   const player = useMIDIPlayer({track: 1})
 
-  const notes = useMIDINotes(midi.inputs[0], {channel: 1})
   return option.match(
     () => <div>loading...</div>,
     (player: VisualPlayerCore) => <MidiApp player={player}/>
