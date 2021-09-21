@@ -23,7 +23,7 @@ export const useMidiFile = (): Option<Midi> => {
   const [midi, setMidi] = useState<Option<Midi>>(option.none)
 
   const fetchMidi = async () => {
-    const midiFile = await Midi.fromUrl("/example2.mid")
+    const midiFile = await Midi.fromUrl(`/${process.env.NODE_ENV === "production" ? "synthesia-react/" : ""}example2.mid`)
 
     setMidi(option.some(midiFile))
   }
