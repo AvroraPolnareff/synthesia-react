@@ -1,4 +1,4 @@
-import {VisualPlayerCore} from "./index"
+import {VisualPlayer} from "./index"
 import * as Comlink from "comlink";
 
 // class VisualPlayerWorker {
@@ -22,4 +22,4 @@ import * as Comlink from "comlink";
 //
 // const visualPlayerWorker = new VisualPlayerWorker()
 
-Comlink.expose(VisualPlayerCore);
+Comlink.expose(VisualPlayer);
