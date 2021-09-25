@@ -13,27 +13,33 @@ class AnimationCore {
 
   private animation = 0
   private isPlaying = false
+  private isStarted = false
   private startTime = 0
   private time = 0
   private event = new EventEmitter<AnimationState>()
 
-  public onFrame(listener: (state: AnimationState) => void) {
+  public onFrame = (listener: (state: AnimationState) => void) => {
     this.event.on(listener)
   }
 
   public start = () => {
+    this.isPlaying = true
     this.animation = requestAnimationFrame((time) => {
-      if (!this.isPlaying) {
+      if (!this.isStarted) {
         this.startTime = time / 1000
+        this.isStarted = true
       }
-      this.isPlaying = true
-      this.time = (time - this.startTime) / 1000
+      if (!this.isPlaying) return
+
+      this.time = time / 1000 - this.startTime
       this.event.emit({time: this.time, startTime: this.startTime, isPlaying: this.isPlaying})
+      this.start()
     })
   }
 
   public stop = () => {
     this.isPlaying = false
+    this.isStarted = false
     this.time = 0
     this.startTime = 0
     this.event.emit({time: this.time, startTime: this.startTime, isPlaying: this.isPlaying})

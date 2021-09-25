@@ -1,6 +1,5 @@
-import {DisplayNote} from "../../core/visual-player-core"
+import {DisplayNote} from "../../core/visual-player"
 import styled, {css} from "styled-components"
-import {array} from "fp-ts"
 import {isBlack} from "../keyboard"
 
 interface NoteProps {

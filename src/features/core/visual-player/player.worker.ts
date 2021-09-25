@@ -1,4 +1,4 @@
-import {VisualPlayer} from "./index"
+import VisualPlayer from "./index"
 import * as Comlink from "comlink";
 
 // class VisualPlayerWorker {

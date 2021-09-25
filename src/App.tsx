@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import {Input, MIDIFilter, MIDINote, useMIDI, useMIDINote} from "@react-midi/hooks"
 import Keyboard from "./features/widgets/keyboard"
 import {Midi} from "@tonejs/midi"
-import {initPlayerState, VisualPlayerCore} from "./features/core/visual-player-core"
+import VisualPlayer, {initPlayerState} from "./features/core/visual-player"
 import {option} from "fp-ts"
 import {Option} from "fp-ts/es6/Option"
 import NoteField from "./features/widgets/note-field"
@@ -37,10 +37,10 @@ export const useMidiFile = (): Option<Midi> => {
 
 export const useMIDIPlayer = ({track = 1}: { track: number }) => {
   const midi = useMidiFile()
-  return option.map((midi: Midi) => new VisualPlayerCore(midi, track, 0.5))(midi)
+  return option.map((midi: Midi) => new VisualPlayer(midi, track, 0.5))(midi)
 }
 
-const MidiApp = ({player}: {player: VisualPlayerCore}) => {
+const MidiApp = ({player}: {player: VisualPlayer}) => {
   const [playerState, setPlayerState] = useState(initPlayerState);
   const {currentNotes, isPlaying, notes} = playerState;
   useEffect(() => player.onStateChange(setPlayerState), [player])
@@ -62,7 +62,7 @@ const App = () => {
 
   return option.match(
     () => <div>loading...</div>,
-    (player: VisualPlayerCore) => <MidiApp player={player}/>
+    (player: VisualPlayer) => <MidiApp player={player}/>
   )(player)
 }
 
