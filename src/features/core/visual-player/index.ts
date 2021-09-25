@@ -13,6 +13,7 @@ export interface PlayerState {
   currentTick: number,
   notes: DisplayNote[]
   tickLength: number
+  time: number
 }
 
 export const initPlayerState: PlayerState = {
@@ -21,6 +22,7 @@ export const initPlayerState: PlayerState = {
   notes: [],
   currentTick: 0,
   tickLength: 0,
+  time: 0,
 }
 
 /**
@@ -43,8 +45,9 @@ class VisualPlayer {
     this.animation.onFrame(({time, startTime, isPlaying}) => {
       if (time > this.midi.tracks[this.trackToPlay].duration) {
         this.stop()
-      }
+      } else {
         if (isPlaying) this.currentTick = Math.floor(time / this.tickLength)
+
         const notes = this.midi.tracks[this.trackToPlay].notes
           .map(({midi, duration, time: noteTime}) => ({note: midi, position: noteTime - time, length: duration}))
         const currentNotes = notes.filter(note => note.position <= 0 && note.position * -1 <= note.length)
@@ -54,7 +57,10 @@ class VisualPlayer {
           currentNotes,
           isPlaying: isPlaying,
           tickLength: this.tickLength,
+          time,
         })
+      }
+
     })
 
   }

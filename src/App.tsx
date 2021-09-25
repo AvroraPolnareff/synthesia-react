@@ -52,6 +52,7 @@ const MidiApp = ({player}: {player: VisualPlayer}) => {
       <button onClick={isPlaying ? player.stop : player.play}>
         {isPlaying ? "stop" : "play"}
       </button>
+      <h1>{playerState.time.toFixed(3)}</h1>
     </div>
   )
 }

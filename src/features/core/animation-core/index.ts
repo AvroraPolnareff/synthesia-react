@@ -10,7 +10,6 @@ interface AnimationState {
  * requestAnimationFrame wrapper
  */
 class AnimationCore {
-
   private animation = 0
   private isPlaying = false
   private isStarted = false
@@ -22,27 +21,31 @@ class AnimationCore {
     this.event.on(listener)
   }
 
-  public start = () => {
-    this.isPlaying = true
-    this.animation = requestAnimationFrame((time) => {
-      if (!this.isStarted) {
-        this.startTime = time / 1000
-        this.isStarted = true
-      }
-      if (!this.isPlaying) return
+  private loop = (time: number) => {
+    if (!this.isStarted) {
+      this.startTime = time / 1000
+      this.isStarted = true
+    }
 
+    if (this.isPlaying) {
       this.time = time / 1000 - this.startTime
       this.event.emit({time: this.time, startTime: this.startTime, isPlaying: this.isPlaying})
-      this.start()
-    })
+      this.animation = requestAnimationFrame(this.loop)
+    }
+  }
+
+  public start = () => {
+    this.isPlaying = true
+    this.animation = requestAnimationFrame(this.loop)
   }
 
   public stop = () => {
+    cancelAnimationFrame(this.animation)
     this.isPlaying = false
     this.isStarted = false
     this.time = 0
     this.startTime = 0
-    this.event.emit({time: this.time, startTime: this.startTime, isPlaying: this.isPlaying})
+    this.event.emit({time: 0, startTime: 0, isPlaying: false})
   }
 
   public pause = () => {
