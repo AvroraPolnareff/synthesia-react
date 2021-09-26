@@ -22,7 +22,7 @@ class AnimationCore {
   }
 
   private loop = (time: number) => {
-    if (!this.isStarted) {
+    if (!this.isStarted && this.isPlaying) {
       this.startTime = time / 1000
       this.isStarted = true
     }

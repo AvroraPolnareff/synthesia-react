@@ -43,7 +43,9 @@ export const useMIDIPlayer = ({track = 1}: { track: number }) => {
 const MidiApp = ({player}: {player: VisualPlayer}) => {
   const [playerState, setPlayerState] = useState(initPlayerState);
   const {currentNotes, isPlaying, notes} = playerState;
-  useEffect(() => player.onStateChange(setPlayerState), [player])
+  useEffect(() => {
+    player.onStateChange(setPlayerState)
+  }, [player])
 
   return (
     <div style={{display: "flex", flexDirection: "column"}}>
