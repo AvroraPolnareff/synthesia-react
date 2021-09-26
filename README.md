@@ -1,6 +1,6 @@
 # synthesia-react
 
-Synthesia clone app, written on typescript, with react as rendering library.
+Synthesia app clone, written on typescript, with react as rendering library.
 
 ## goals
 - [ ] process user input from keyboard
