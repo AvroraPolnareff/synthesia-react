@@ -1,5 +1,5 @@
 import {Midi} from "@tonejs/midi"
-import AnimationCore from "../animation-core"
+import Animation from "../animation"
 
 export interface DisplayNote {
   note: number
@@ -39,10 +39,10 @@ class VisualPlayer {
 
   private tempo = this.midi.header.tempos[0].bpm
   private currentTick = 0
-  private animation = new AnimationCore()
+  private animation = new Animation()
 
   public onStateChange = (listener: (state: PlayerState) => void) => {
-    this.animation.onFrame(({time, startTime, isPlaying}) => {
+    this.animation.onFrame(({time, isPlaying}) => {
       if (time > this.midi.tracks[this.trackToPlay].duration) {
         this.stop()
       } else {
@@ -59,9 +59,7 @@ class VisualPlayer {
           time,
         })
       }
-
     })
-
   }
 
   public play = () => {

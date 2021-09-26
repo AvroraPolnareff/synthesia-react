@@ -9,7 +9,7 @@ interface AnimationState {
 /**
  * requestAnimationFrame wrapper
  */
-class AnimationCore {
+class Animation {
   private animation = 0
   private isPlaying = false
   private isStarted = false
@@ -57,4 +57,4 @@ class AnimationCore {
   }
 }
 
-export default AnimationCore
+export default Animation
