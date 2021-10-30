@@ -2,7 +2,7 @@
 
 Synthesia app clone, written on typescript, with react as rendering library.
 
-## goals
+## goals:
 - [ ] base app (load midi -> play track -> note counts on key press)
 - [ ] database of loaded midi tracks
 - [ ] playback sounds
@@ -11,7 +11,7 @@ Synthesia app clone, written on typescript, with react as rendering library.
 - [ ] add ability to play multiple tracks
 - [ ] add follow mode (playback pauses, when note wasn't pressed)
 
-## maybe I try this
+## maybe I try to add:
 - [ ] support tempo change
 - [ ] standalone version (electron)
 - [ ] react-native version
